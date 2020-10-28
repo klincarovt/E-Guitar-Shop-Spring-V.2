@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Chamb - Responsive E-commerce HTML5 Template</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--enable mobile device-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--fontawesome css-->
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <!--bootstrap css-->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!--animate css-->
+    <link rel="stylesheet" href="/css/animate-wow.css">
+    <!--main css-->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/css/slick.min.css">
+    <!--responsive css-->
+    <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+<header id="header" class="top-head">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4 col-sm-12 left-rs">
+                    <div class="navbar-header">
+                        <button type="button" id="top-menu" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="/" class="navbar-brand" ><img src="../static/images/logo.png" style="margin-right:-20px;" alt="" />Home</a>
+                        <a style="margin-left:1px;" href="/guitars" class="navbar-brand"><img src="../static/images/logo.png"  style="margin-right:-20px;" alt="" />Guitars</a>
+                        <a style="margin-left:1px; margin-right:-10px;" href="/categories" class="navbar-brand"><img src="../static/images/logo.png" style="margin-right:-20px;" alt="" />Categories</a>
+                        <a style="margin-left:1px; margin-right:-10px;" href="/craftsmen" class="navbar-brand"><img src="../static/images/logo.png"  style="margin-right:-20px;" alt="" />Craftsmen</a>
+                    </div>
+
+                </div>
+                <div class="col-md-8 col-sm-1 2">
+                    <div class="right-nav">
+                        <div class="login-sr">
+                            <div class="login-signup">
+                                <ul>
+                                    <li><a href="/shopping-cart">Cart</a></li>
+                                    <li><a href="/payments/charge">Checkout</a></li>
+                                    <li><a href="/login">Login</a></li>
+                                    <li><a class="custom-b" href="/signup">Sign up</a></li>
+                                    <li><a class="nav-link" href="/logout">Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/.container-fluid -->
+    </nav>
+</header>
+<!-- Modal -->
+<div class="modal fade lug" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li><a href="#"><img src="../static/images/flag-up-1.png" alt="" /> United States</a></li>
+                    <li><a href="#"><img src="../static/images/flag-up-2.png" alt="" /> France </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="sidebar" class="top-nav">
+
+</div>
+<div class="page-content-product" style="margin-bottom:-10%">
+    <div class="main-product">
+        <div class="container">
+            <div class="row clearfix">
+                <div class="find-box">
+                    <h4>These are our Guitars!</h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="row clearfix">
+
+        </div>
+    </div>
+</div>
+</div>
+<div class="cat-main-box">
+    <div class="container">
+        <div class="row panel-row">
+            <div class="container mb-4" style="margin: 3%">
+                <div class="row">
+                    <div class="col-12" th:if="${guitars.size() > 0}">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Guitar</th>
+                                    <th scope="col">Current stock</th>
+                                    <th scope="col">Samples</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Crafted by</th>
+                                    <th scope="col">Edit/Remove</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="guitar : ${guitars}">
+                                    <td><img style="max-height: 200px; max-width: 200px;" th:src="${guitar.getBase64()}"></td>
+                                    <td th:text="${guitar.getName()}"></td>
+                                    <td th:text="${guitar.getSamples() > 0 ? 'In stock' : 'Out of stock'}">
+                                    <td th:text="${guitar.getSamples()}">
+                                    <td th:text="${guitar.getPrice()}"></td>
+                                    <td th:text="${guitar.getCategory() != null} ? ${guitar.getCategory().getName()} : 'No category'"></td>
+                                    <td th:text="${guitar.getCraftsmen() != null} ? ${guitar.getCraftsmenString()} : 'No craftsman'">
+
+                                    </td>
+                                    <td>
+                                        <div class="col-sm-12  col-md-12" sec:authorize="hasRole('ROLE_ADMIN')">
+                                            <a class="btn btn-info btn-sm"
+                                               th:href="@{guitars/{id}/edit(id=${guitar.getId()})}">
+                                                <i class="fa">Edit</i>
+                                            </a>
+                                            <form th:action="@{/guitars/{id}/delete(id=${guitar.getId()})}"
+                                                  th:method="delete">
+                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            </form>
+                                        </div>
+
+                                        <form th:action="@{/shopping-cart/{id}/add-guitar(id=${guitar.getId()})}" th:method="post">
+                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fa">Add to cart</i></button>
+                                        </form>
+                                        <form th:action="@{/shopping-cart/{id}/remove-guitar(id=${guitar.getId()})}" th:method="post">
+                                            <button type="submit" class="btn btn-sm btn-warning"><i class="fa">Remove from cart</i></button>
+                                        </form>
+
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col mb-2">
+                        <div class="row">
+                            <div class="col-sm-12  col-md-12" sec:authorize="hasRole('ROLE_ADMIN')">
+                                <a href="/guitars/add-new" class="btn btn-block btn-primary">Add new guitar </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <div class="main-footer">
+        <div class="container">
+            <div class="row">
+
+
+
+            </div>
+            <div class="footer-link-box clearfix">
+                <div class="col-md-6 col-sm-6">
+                    <div class="left-f-box">
+                        <div class="col-sm-4">
+                            <h2>SELL ON chamb</h2>
+                            <ul>
+                                <li><a href="#">Create account</a></li>
+                                <li><a href="unImplemented/howitworks.html">How it works suppliers</a></li>
+                                <li><a href="unImplemented/pricing.html">Pricing</a></li>
+                                <li><a href="#">FAQ for Suppliers</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <h2>BUY ON chamb</h2>
+                            <ul>
+                                <li><a href="#">Create account</a></li>
+                                <li><a href="#">How it works buyers</a></li>
+                                <li><a href="#">Categories</a></li>
+                                <li><a href="#">FAQ for buyers</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <h2>COMPANY</h2>
+                            <ul>
+                                <li><a href="unImplemented/about-us.html">About chamb</a></li>
+                                <li><a href="#">Contact us</a></li>
+                                <li><a href="#">Press</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Terms of use</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="right-f-box">
+                        <h2>INDUSTRIES</h2>
+                        <ul class="col-sm-4">
+                            <li><a href="#">Textiles</a></li>
+                            <li><a href="#">Furniture</a></li>
+                            <li><a href="#">Leather</a></li>
+                            <li><a href="#">Agriculture</a></li>
+                            <li><a href="#">Food & drinks</a></li>
+                        </ul>
+                        <ul class="col-sm-4">
+                            <li><a href="#">Office</a></li>
+                            <li><a href="#">Decoratives</a></li>
+                            <li><a href="#">Electronics</a></li>
+                            <li><a href="#">Machines</a></li>
+                            <li><a href="#">Building</a></li>
+                        </ul>
+                        <ul class="col-sm-4">
+                            <li><a href="#">Cosmetics</a></li>
+                            <li><a href="#">Health</a></li>
+                            <li><a href="#">Jewelry</a></li>
+                            <li><a href="#">See all here</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <p><img width="90" src="../static/images/logo.png" alt="#" style="margin-top: -5px;" /> All Rights Reserved. Company Name © 2018</p>
+                </div>
+                <div class="col-md-4">
+                    <ul class="list-inline socials">
+                        <li>
+                            <a href="">
+                                <i class="fa fa-facebook" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <i class="fa fa-twitter" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <i class="fa fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-linkedin" aria-hidden="true"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="right-flag">
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--main js-->
+<script src="../static/js/jquery-1.12.4.min.js"></script>
+<!--bootstrap js-->
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/bootstrap-select.min.js"></script>
+<script src="../static/js/slick.min.js"></script>
+<script src="../static/js/wow.min.js"></script>
+<!--custom js-->
+<script src="../static/js/custom.js"></script>
+</body>
+</html>
